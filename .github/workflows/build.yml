@@ -1,3 +1,4 @@
+
 name: Build ThreadPlay APK
 
 on:
@@ -30,16 +31,17 @@ jobs:
 
       - name: Extract project
         run: |
-          unzip ThreadPlay_1_0_Proyecto_Completo.zip
-          echo "PROJECT_DIR=ThreadPlay_1_0" >> $GITHUB_ENV
+          mkdir project
+          unzip -q ThreadPlay_1_0_Proyecto_Completo.zip -d project
 
       - name: Build APK
         run: |
-          cd ThreadPlay_1_0
+          cd project
           gradle assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: ThreadPlay-APK
-          path: ThreadPlay_1_0/app/build/outputs/apk/debug/app-debug.apk
+          path: project/app/build/outputs/apk/debug/app-debug.apk
+          

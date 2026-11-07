@@ -1,0 +1,45 @@
+name: Build ThreadPlay APK
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/build.yml'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Extract project
+        run: |
+          unzip ThreadPlay_1_0_Proyecto_Completo.zip
+          echo "PROJECT_DIR=ThreadPlay_1_0" >> $GITHUB_ENV
+
+      - name: Build APK
+        run: |
+          cd ThreadPlay_1_0
+          gradle assembleDebug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: ThreadPlay-APK
+          path: ThreadPlay_1_0/app/build/outputs/apk/debug/app-debug.apk
